@@ -36,6 +36,9 @@ class InterfazLexer:
             Categoria.PARENTESIS_CIERRE: "dark cyan",
             Categoria.LLAVE_APERTURA: "dark cyan",
             Categoria.LLAVE_CIERRE: "dark cyan",
+            Categoria.CORCHETE_APERTURA: "dark slate gray",
+            Categoria.CORCHETE_CIERRE: "dark slate gray",
+            Categoria.DOS_PUNTOS: "firebrick",
             Categoria.TERMINAL: "magenta",
             Categoria.SEPARADOR: "magenta",
             # Categoria.ERROR se maneja en el panel de errores, no necesita color aquí

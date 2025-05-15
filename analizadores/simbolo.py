@@ -42,6 +42,11 @@ class SimboloAFD:
             '{': 'LLAVE_APERTURA',
             '}': 'LLAVE_CIERRE',
             
+            # Corchetes y dos puntos
+            '[': 'CORCHETE_APERTURA',
+            ']': 'CORCHETE_CIERRE',
+            ':': 'DOS_PUNTOS',
+            
             # Terminal y separador
             ';': 'TERMINAL',
             ',': 'SEPARADOR',
