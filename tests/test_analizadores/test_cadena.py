@@ -139,11 +139,11 @@ class TestCadenaAFD:
         assert consumidos == len(lexema)
 
     def test_cadena_con_template_literal(self, afd):
-        """Prueba una cadena con template literal (no debería ser válida)"""
+        """Prueba una cadena con template literal (debe ser válida)"""
         valido, lexema, consumidos = afd.analizar('`template literal`', 0)
-        assert valido == False
-        assert lexema == ''
-        assert consumidos == 0
+        assert valido is True
+        assert lexema == '`template literal`'
+        assert consumidos == len('`template literal`')
 
     def test_cadena_con_interpolacion(self, afd):
         """Prueba una cadena con interpolación (no debería ser válida)"""
