@@ -10,11 +10,11 @@ from analizadores.identificador import IdentificadorAFD
 from lexer import AnalizadorLexico
 from tokens import Categoria
 
-class InterfazIdentificador:
+class InterfazLexer:
     def __init__(self, root):
         self.root = root
         self.root.title("Analizador Léxico - JavaScript")
-        self.root.geometry("800x600")  # Tamaño más grande
+        self.root.geometry("900x700")  # Ajustar tamaño para más espacio
         
         # Configuración de la interfaz
         self.configure_ui()
@@ -24,7 +24,6 @@ class InterfazIdentificador:
         
     def configure_ui(self):
         """Configura todos los elementos de la interfaz gráfica"""
-        # Frame principal con dos columnas
         main_frame = ttk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
@@ -32,97 +31,113 @@ class InterfazIdentificador:
         left_frame = ttk.LabelFrame(main_frame, text="Código JavaScript")
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
         
-        # Editor de texto con scroll
-        self.editor = scrolledtext.ScrolledText(left_frame, wrap=tk.WORD, width=40, height=25)
+        self.editor = scrolledtext.ScrolledText(left_frame, wrap=tk.WORD, width=50, height=30)
         self.editor.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
-        # Panel derecho para resultados
-        right_frame = ttk.LabelFrame(main_frame, text="Resultados del Análisis")
+        # Panel derecho para resultados (tokens y errores)
+        right_frame = ttk.Frame(main_frame) # Quitar LabelFrame para mejor distribución interna
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
         
-        # Botón de análisis
+        # Botones de acción
         btn_frame = ttk.Frame(right_frame)
-        btn_frame.pack(fill=tk.X, padx=5, pady=5)
+        btn_frame.pack(fill=tk.X, pady=(0,5)) # pady inferior para separar de la tabla
         
         self.btn_analizar = ttk.Button(btn_frame, text="Analizar Código", command=self.analizar_codigo)
-        self.btn_analizar.pack(side=tk.LEFT, padx=5)
+        self.btn_analizar.pack(side=tk.LEFT, padx=(0,5))
         
         self.btn_limpiar = ttk.Button(btn_frame, text="Limpiar", command=self.limpiar)
-        self.btn_limpiar.pack(side=tk.LEFT, padx=5)
+        self.btn_limpiar.pack(side=tk.LEFT)
         
-        # Tabla de resultados
+        # Panel para la tabla de Tokens
+        tokens_frame = ttk.LabelFrame(right_frame, text="Tokens Identificados")
+        tokens_frame.pack(fill=tk.BOTH, expand=True, pady=(5,5))
+
         columns = ("lexema", "categoria", "fila", "columna")
-        self.tabla = ttk.Treeview(right_frame, columns=columns, show="headings")
+        self.tabla_tokens = ttk.Treeview(tokens_frame, columns=columns, show="headings")
         
-        # Configurar encabezados
-        self.tabla.heading("lexema", text="Lexema")
-        self.tabla.heading("categoria", text="Categoría")
-        self.tabla.heading("fila", text="Fila")
-        self.tabla.heading("columna", text="Columna")
+        self.tabla_tokens.heading("lexema", text="Lexema")
+        self.tabla_tokens.heading("categoria", text="Categoría")
+        self.tabla_tokens.heading("fila", text="Fila")
+        self.tabla_tokens.heading("columna", text="Columna")
         
-        # Configurar columnas
-        self.tabla.column("lexema", width=150)
-        self.tabla.column("categoria", width=100)
-        self.tabla.column("fila", width=50)
-        self.tabla.column("columna", width=50)
+        self.tabla_tokens.column("lexema", width=150, anchor=tk.W)
+        self.tabla_tokens.column("categoria", width=150, anchor=tk.W)
+        self.tabla_tokens.column("fila", width=50, anchor=tk.CENTER)
+        self.tabla_tokens.column("columna", width=50, anchor=tk.CENTER)
         
-        # Scrollbar para la tabla
-        scrollbar = ttk.Scrollbar(right_frame, orient=tk.VERTICAL, command=self.tabla.yview)
-        self.tabla.configure(yscroll=scrollbar.set)
+        scrollbar_tokens = ttk.Scrollbar(tokens_frame, orient=tk.VERTICAL, command=self.tabla_tokens.yview)
+        self.tabla_tokens.configure(yscroll=scrollbar_tokens.set)
         
-        # Empaquetar tabla y scrollbar
-        self.tabla.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.tabla_tokens.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar_tokens.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Panel para Errores Léxicos
+        errores_frame = ttk.LabelFrame(right_frame, text="Errores Léxicos")
+        # Ajustar altura relativa para el panel de errores, ej. 1/3 de la tabla de tokens
+        errores_frame.pack(fill=tk.BOTH, expand=True, pady=(5,0), ipady=5) 
+        
+        self.texto_errores = scrolledtext.ScrolledText(errores_frame, wrap=tk.WORD, width=40, height=5, state=tk.DISABLED)
+        self.texto_errores.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
              
     def analizar_codigo(self):
         """Analiza el código completo usando el analizador léxico"""
-        # Limpiar tabla
-        self.limpiar_tabla()
+        self.limpiar_resultados()
         
-        # Obtener código
         codigo = self.editor.get("1.0", tk.END)
         if not codigo.strip():
             messagebox.showinfo("Aviso", "Por favor ingresa código para analizar.")
             return
             
-        # Analizar el código con el analizador léxico
         tokens, errores = self.analizador.analizar(codigo)
         
         # Mostrar tokens en la tabla
         for token in tokens:
-            self.tabla.insert("", "end", values=(
+            # Limpiar la categoría para mejor visualización
+            categoria_simple = token.categoria.split('.')[-1] if '.' in token.categoria else token.categoria
+            self.tabla_tokens.insert("", "end", values=(
                 token.lexema, 
-                token.categoria,
+                categoria_simple,
                 token.fila, 
                 token.columna
             ))
         
-        # Mostrar errores (si hay)
+        # Mostrar errores en el panel de errores
+        self.texto_errores.config(state=tk.NORMAL)
+        self.texto_errores.delete("1.0", tk.END)
         if errores:
-            for error in errores:
-                self.tabla.insert("", "end", values=(
-                    error.lexema,
-                    "ERROR: Carácter no reconocido",
-                    error.fila,
-                    error.columna
-                ))
-            
+            for i, error in enumerate(errores, 1):
+                mensaje_error = f"{i}. Error: Carácter '{error.lexema}' no reconocido en Fila {error.fila}, Columna {error.columna}\n"
+                self.texto_errores.insert(tk.END, mensaje_error)
             messagebox.showwarning(
-                "Errores encontrados", 
-                f"Se encontraron {len(errores)} errores léxicos en el código."
+                "Errores Léxicos Encontrados", 
+                f"Se encontraron {len(errores)} errores léxicos. Revise el panel de errores."
             )
+        else:
+            self.texto_errores.insert(tk.END, "No se encontraron errores léxicos.\n")
+        self.texto_errores.config(state=tk.DISABLED)
     
-    def limpiar_tabla(self):
-        """Limpia la tabla de resultados"""
-        for item in self.tabla.get_children():
-            self.tabla.delete(item)
+    def limpiar_tabla_tokens(self):
+        """Limpia la tabla de tokens"""
+        for item in self.tabla_tokens.get_children():
+            self.tabla_tokens.delete(item)
+
+    def limpiar_panel_errores(self):
+        """Limpia el panel de errores"""
+        self.texto_errores.config(state=tk.NORMAL)
+        self.texto_errores.delete("1.0", tk.END)
+        self.texto_errores.config(state=tk.DISABLED)
             
+    def limpiar_resultados(self):
+        self.limpiar_tabla_tokens()
+        self.limpiar_panel_errores()
+
     def limpiar(self):
-        """Limpia editor y tabla"""
+        """Limpia editor y todos los resultados"""
         self.editor.delete("1.0", tk.END)
-        self.limpiar_tabla()
+        self.limpiar_resultados()
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = InterfazIdentificador(root)
+    # Renombrar la clase de la interfaz si es necesario, ej. InterfazLexer
+    app = InterfazLexer(root) 
     root.mainloop()
