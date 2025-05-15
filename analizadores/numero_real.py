@@ -34,6 +34,11 @@ class NumeroRealAFD:
         tiene_punto_decimal = False
         tiene_notacion_cientifica = False
         
+        # Variables para guardar el último estado de aceptación
+        ultimo_estado_aceptacion = None
+        lexema_aceptado = ''
+        pos_aceptado = pos_inicial
+        
         while pos < len(texto):
             c = texto[pos]
             
@@ -138,17 +143,19 @@ class NumeroRealAFD:
                     pos += 1
                 else:
                     break
-        
-        # Verificar si el estado final es de aceptación y es realmente un número real
-        estados_aceptacion = [2, 3, 5, 8]  # Excluimos estado 1 (entero sin punto decimal)
-        
-        # Estado 1 solo es válido si tiene notación científica (para casos como "1e10")
-        if estado == 1 and tiene_notacion_cientifica:
-            estados_aceptacion.append(1)
             
-        if estado in estados_aceptacion and (tiene_punto_decimal or tiene_notacion_cientifica):
-            caracteres_consumidos = pos - pos_inicial
-            return True, lexema, caracteres_consumidos
+            # Guardar el último estado de aceptación
+            estados_aceptacion = [2, 3, 5, 8]
+            if estado == 1 and tiene_notacion_cientifica:
+                estados_aceptacion.append(1)
+            if estado in estados_aceptacion and (tiene_punto_decimal or tiene_notacion_cientifica):
+                ultimo_estado_aceptacion = estado
+                lexema_aceptado = lexema
+                pos_aceptado = pos
+        
+        # Al terminar, retornar el último lexema aceptado si existe
+        if ultimo_estado_aceptacion is not None:
+            return True, lexema_aceptado, pos_aceptado - pos_inicial
         else:
             return False, '', 0
 

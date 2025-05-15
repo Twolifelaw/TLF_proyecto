@@ -30,40 +30,36 @@ class IdentificadorAFD:
             - lexema: El identificador encontrado (vacío si no se encontró)
             - caracteres_consumidos: Número de caracteres procesados
         """
+        if pos_inicial >= len(texto):
+            return False, '', 0
+
         # Estados del autómata:
         # 0: Estado inicial
         # 1: Estado de aceptación (después de primer carácter válido)
         estado = 0
         lexema = ''  # Almacena el identificador que se va construyendo
         pos = pos_inicial  # Posición actual en el texto
-        longitud = 0  # Contador de caracteres del identificador
         
-        # Procesar mientras queden caracteres y no se exceda la longitud máxima
-        while pos < len(texto) and longitud < self.max_length:
-            c = texto[pos]  # Obtener carácter actual
-            
-            if estado == 0:  # Estado inicial: debe ser letra, _ o $
-                if c.isalpha() or c == '_' or c == '$':
-                    estado = 1  # Transición al estado de aceptación
-                    lexema += c
-                    pos += 1
-                    longitud += 1
-                else:
-                    break  # No es un identificador válido
-            
-            elif estado == 1:  # Ya tenemos al menos un carácter válido
-                if c.isalnum() or c == '_' or c == '$':  # Letras, números, _ o $
-                    lexema += c
-                    pos += 1
-                    longitud += 1
-                else:
-                    break  # Fin del identificador
-        
-        # Verificar si el identificador es válido (debe tener al menos un carácter y comenzar correctamente)
-        if len(lexema) > 0 and (lexema[0].isalpha() or lexema[0] == '_' or lexema[0] == '$'):
-            return True, lexema, pos - pos_inicial
-        else:
+        # Verificar el primer carácter
+        c = texto[pos]
+        if not (c.isalpha() or c == '_' or c == '$'):
             return False, '', 0
+            
+        # El primer carácter es válido
+        estado = 1
+        lexema += c
+        pos += 1
+        
+        # Procesar el resto de caracteres
+        while pos < len(texto) and len(lexema) < self.max_length:
+            c = texto[pos]
+            if c.isalnum() or c == '_' or c == '$':
+                lexema += c
+                pos += 1
+            else:
+                break
+        
+        return True, lexema, pos - pos_inicial
 
 if __name__ == "__main__":
     # Código de prueba que se ejecuta solo si se ejecuta este archivo directamente
