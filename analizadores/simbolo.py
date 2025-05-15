@@ -45,6 +45,7 @@ class SimboloAFD:
             # Terminal y separador
             ';': 'TERMINAL',
             ',': 'SEPARADOR',
+            '.': 'OPERADOR_ACCESO'
         }
         
         # Símbolos que podrían ser parte de símbolos más largos
