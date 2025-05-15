@@ -83,4 +83,56 @@ class TestComentarioBloqueAFD:
         valido, lexema, consumidos = afd.analizar(texto, 0)
         assert valido is True
         assert lexema == texto
+        assert consumidos == len(lexema)
+
+    def test_comentario_bloque_con_unicode(self, afd):
+        texto = '/* Comentario con ñ y áéíóú */'
+        valido, lexema, consumidos = afd.analizar(texto, 0)
+        assert valido is True
+        assert lexema == texto
+        assert consumidos == len(lexema)
+
+    def test_comentario_bloque_con_espacios_antes(self, afd):
+        texto = '   /* Comentario con espacios antes */'
+        valido, lexema, consumidos = afd.analizar(texto, 0)
+        assert valido is False  # No debe reconocer si hay espacios antes
+        assert lexema == ''
+        assert consumidos == 0
+
+    def test_comentario_bloque_muy_largo(self, afd):
+        texto = '/* ' + 'a' * 1000 + ' */'
+        valido, lexema, consumidos = afd.analizar(texto, 0)
+        assert valido is True
+        assert lexema == texto
+        assert consumidos == len(lexema)
+
+    def test_comentario_bloque_con_caracteres_especiales(self, afd):
+        texto = '/* !@#$%^&*()_+-=[]{}|;:,.<>? */'
+        valido, lexema, consumidos = afd.analizar(texto, 0)
+        assert valido is True
+        assert lexema == texto
+        assert consumidos == len(lexema)
+
+    def test_comentario_bloque_jsdoc(self, afd):
+        texto = '''/**
+ * Sistema de Gestión de Tareas Avanzado
+ * 
+ * Esta función permite:
+ * - Añadir tareas con prioridad, categoría y fecha límite
+ * - Marcar tareas como completadas
+ * - Filtrar tareas por diferentes criterios
+ * - Estadísticas de productividad
+ * - Persistencia en localStorage
+ * - Notificaciones de tareas próximas
+ */'''
+        valido, lexema, consumidos = afd.analizar(texto, 0)
+        assert valido is True
+        assert lexema == texto
+        assert consumidos == len(lexema)
+
+    def test_comentario_bloque_con_salto_linea_windows(self, afd):
+        texto = '/* Comentario\r\ncon salto de línea Windows */'
+        valido, lexema, consumidos = afd.analizar(texto, 0)
+        assert valido is True
+        assert lexema == texto
         assert consumidos == len(lexema) 

@@ -34,103 +34,118 @@ class AnalizadorLexico:
     def analizar(self, codigo_fuente):
         """
         Analiza el código fuente completo y devuelve una lista de tokens.
-        
-        Args:
-            codigo_fuente: String con el código fuente a analizar
-            
-        Returns:
-            Lista de objetos Token
+        Ahora procesa el código como un solo string para soportar comentarios de bloque multilínea.
         """
         tokens = []
         errores = []
         
-        lineas = codigo_fuente.split('\n')
-        for num_linea, linea in enumerate(lineas, 1):
-            pos = 0
-            
-            while pos < len(linea):
-                # Ignorar espacios en blanco
-                if linea[pos].isspace():
-                    pos += 1
-                    continue
-                
-                # Analizar con cada analizador
-                mejor_consumo = 0
-                mejor_lexema = ""
-                mejor_categoria = None
-                
-                # Probar comentarios de bloque (/* ... */)
-                valido, lexema, consumidos = self.analizadores["comentario_bloque"].analizar(linea, pos)
-                if valido and consumidos > mejor_consumo:
-                    mejor_consumo = consumidos
-                    mejor_lexema = lexema
-                    mejor_categoria = Categoria.COMENTARIO_BLOQUE
-                
-                # Probar comentarios de línea (//)
-                valido, lexema, consumidos = self.analizadores["comentario_linea"].analizar(linea, pos)
-                if valido and consumidos > mejor_consumo:
-                    mejor_consumo = consumidos
-                    mejor_lexema = lexema
-                    mejor_categoria = Categoria.COMENTARIO_LINEA
-                
-                # Probar cadenas (para reconocer texto entre comillas)
-                valido, lexema, consumidos = self.analizadores["cadena"].analizar(linea, pos)
-                if valido and consumidos > mejor_consumo:
-                    mejor_consumo = consumidos
-                    mejor_lexema = lexema
-                    mejor_categoria = Categoria.CADENA
-                
-                # Probar símbolos (operadores, paréntesis, etc.)
-                valido, lexema, consumidos = self.analizadores["simbolo"].analizar(linea, pos)
-                if valido and consumidos > mejor_consumo:
-                    mejor_consumo = consumidos
-                    mejor_lexema = lexema
-                    # Obtener la categoría específica del símbolo
-                    categoria_simbolo = self.analizadores["simbolo"].obtener_categoria(lexema)
-                    if categoria_simbolo:
-                        mejor_categoria = categoria_simbolo
-                
-                # Probar palabra reservada
-                valido, lexema, consumidos = self.analizadores["palabra_reservada"].analizar(linea, pos)
-                if valido and consumidos > mejor_consumo:
-                    mejor_consumo = consumidos
-                    mejor_lexema = lexema
-                    mejor_categoria = Categoria.PALABRA_RESERVADA
-                
-                # Probar número real (antes que natural para evitar confusión)
-                valido, lexema, consumidos = self.analizadores["numero_real"].analizar(linea, pos)
-                if valido and consumidos > mejor_consumo:
-                    mejor_consumo = consumidos
-                    mejor_lexema = lexema
-                    mejor_categoria = Categoria.NUMERO_REAL
-                
-                # Probar número natural
-                valido, lexema, consumidos = self.analizadores["numero_natural"].analizar(linea, pos)
-                if valido and consumidos > mejor_consumo:
-                    mejor_consumo = consumidos
-                    mejor_lexema = lexema
-                    mejor_categoria = Categoria.NUMERO_NATURAL
-                
-                # Probar identificador
-                valido, lexema, consumidos = self.analizadores["identificador"].analizar(linea, pos)
-                if valido and consumidos > mejor_consumo:
-                    mejor_consumo = consumidos
-                    mejor_lexema = lexema
-                    mejor_categoria = Categoria.IDENTIFICADOR
-                
-                # TODO: Probar el resto de analizadores
-                
-                # Si se encontró un token
-                if mejor_consumo > 0:
-                    token = Token(mejor_lexema, mejor_categoria, num_linea, pos+1)
-                    tokens.append(token)
-                    pos += mejor_consumo
-                else:
-                    # Error: carácter no reconocido
-                    error = Token(linea[pos], Categoria.ERROR, num_linea, pos+1)
-                    errores.append(error)
-                    pos += 1
+        pos = 0
+        num_linea = 1
+        columna = 1
+        codigo = codigo_fuente
+        longitud = len(codigo)
         
+        while pos < longitud:
+            c = codigo[pos]
+            if c == '\n':
+                num_linea += 1
+                columna = 1
+                pos += 1
+                continue
+            if c.isspace():
+                columna += 1
+                pos += 1
+                continue
+            
+            mejor_consumo = 0
+            mejor_lexema = ""
+            mejor_categoria = None
+            mejor_linea = num_linea
+            mejor_columna = columna
+            
+            # Probar comentarios de bloque (/* ... */)
+            valido, lexema, consumidos = self.analizadores["comentario_bloque"].analizar(codigo, pos)
+            if valido and consumidos > mejor_consumo:
+                mejor_consumo = consumidos
+                mejor_lexema = lexema
+                mejor_categoria = Categoria.COMENTARIO_BLOQUE
+            
+            # Probar comentarios de línea (//)
+            valido, lexema, consumidos = self.analizadores["comentario_linea"].analizar(codigo, pos)
+            if valido and consumidos > mejor_consumo:
+                mejor_consumo = consumidos
+                mejor_lexema = lexema
+                mejor_categoria = Categoria.COMENTARIO_LINEA
+            
+            # Probar cadenas (para reconocer texto entre comillas)
+            valido, lexema, consumidos = self.analizadores["cadena"].analizar(codigo, pos)
+            if valido and consumidos > mejor_consumo:
+                mejor_consumo = consumidos
+                mejor_lexema = lexema
+                mejor_categoria = Categoria.CADENA
+            
+            # Probar símbolos (operadores, paréntesis, etc.)
+            valido, lexema, consumidos = self.analizadores["simbolo"].analizar(codigo, pos)
+            if valido and consumidos > mejor_consumo:
+                mejor_consumo = consumidos
+                mejor_lexema = lexema
+                categoria_simbolo = self.analizadores["simbolo"].obtener_categoria(lexema)
+                if categoria_simbolo:
+                    mejor_categoria = categoria_simbolo
+            
+            # Probar palabra reservada
+            valido, lexema, consumidos = self.analizadores["palabra_reservada"].analizar(codigo, pos)
+            if valido and consumidos > mejor_consumo:
+                mejor_consumo = consumidos
+                mejor_lexema = lexema
+                mejor_categoria = Categoria.PALABRA_RESERVADA
+            
+            # Probar número real (antes que natural para evitar confusión)
+            valido, lexema, consumidos = self.analizadores["numero_real"].analizar(codigo, pos)
+            if valido and consumidos > mejor_consumo:
+                mejor_consumo = consumidos
+                mejor_lexema = lexema
+                mejor_categoria = Categoria.NUMERO_REAL
+            
+            # Probar número natural
+            valido, lexema, consumidos = self.analizadores["numero_natural"].analizar(codigo, pos)
+            if valido and consumidos > mejor_consumo:
+                mejor_consumo = consumidos
+                mejor_lexema = lexema
+                mejor_categoria = Categoria.NUMERO_NATURAL
+            
+            # Probar identificador
+            valido, lexema, consumidos = self.analizadores["identificador"].analizar(codigo, pos)
+            if valido and consumidos > mejor_consumo:
+                mejor_consumo = consumidos
+                mejor_lexema = lexema
+                mejor_categoria = Categoria.IDENTIFICADOR
+            
+            # Si se encontró un token
+            if mejor_consumo > 0:
+                # Calcular la línea y columna de inicio del token
+                lineas_antes = codigo[:pos].split('\n')
+                mejor_linea = len(lineas_antes)
+                if '\n' in mejor_lexema:
+                    mejor_columna = len(lineas_antes[-1]) + 1
+                else:
+                    mejor_columna = len(lineas_antes[-1]) + 1
+                token = Token(mejor_lexema, mejor_categoria, mejor_linea, mejor_columna)
+                tokens.append(token)
+                # Avanzar posición y actualizar línea/columna
+                for i in range(mejor_consumo):
+                    if codigo[pos] == '\n':
+                        num_linea += 1
+                        columna = 1
+                    else:
+                        columna += 1
+                    pos += 1
+            else:
+                # Error: carácter no reconocido
+                token = Token(codigo[pos], Categoria.ERROR, num_linea, columna)
+                errores.append(token)
+                columna += 1
+                pos += 1
         return tokens, errores
 
 if __name__ == "__main__":
