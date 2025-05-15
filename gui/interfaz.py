@@ -16,6 +16,31 @@ class InterfazLexer:
         self.root.title("Analizador Léxico - JavaScript")
         self.root.geometry("900x700")  # Ajustar tamaño para más espacio
         
+        # Definir colores para categorías de tokens
+        self.colores_categoria = {
+            Categoria.PALABRA_RESERVADA: "blue",
+            Categoria.IDENTIFICADOR: "black",
+            Categoria.NUMERO_NATURAL: "dark green",
+            Categoria.NUMERO_REAL: "green",
+            Categoria.CADENA: "purple",
+            Categoria.COMENTARIO_LINEA: "gray",
+            Categoria.COMENTARIO_BLOQUE: "gray",
+            Categoria.OPERADOR_ARITMETICO: "orange red",
+            Categoria.OPERADOR_COMPARACION: "orange red",
+            Categoria.OPERADOR_LOGICO: "orange red",
+            Categoria.OPERADOR_ASIGNACION: "orange red",
+            Categoria.OPERADOR_INCREMENTO: "orange red",
+            Categoria.OPERADOR_DECREMENTO: "orange red",
+            Categoria.OPERADOR_ACCESO: "dark orange",
+            Categoria.PARENTESIS_APERTURA: "dark cyan",
+            Categoria.PARENTESIS_CIERRE: "dark cyan",
+            Categoria.LLAVE_APERTURA: "dark cyan",
+            Categoria.LLAVE_CIERRE: "dark cyan",
+            Categoria.TERMINAL: "magenta",
+            Categoria.SEPARADOR: "magenta",
+            # Categoria.ERROR se maneja en el panel de errores, no necesita color aquí
+        }
+        
         # Configuración de la interfaz
         self.configure_ui()
         
@@ -65,6 +90,12 @@ class InterfazLexer:
         self.tabla_tokens.column("fila", width=50, anchor=tk.CENTER)
         self.tabla_tokens.column("columna", width=50, anchor=tk.CENTER)
         
+        # Configurar tags para colores
+        for categoria, color in self.colores_categoria.items():
+            # Usamos el nombre simple de la categoría como tag para simplificar
+            tag_name = categoria.split('.')[-1] if '.' in categoria else categoria
+            self.tabla_tokens.tag_configure(tag_name, foreground=color)
+        
         scrollbar_tokens = ttk.Scrollbar(tokens_frame, orient=tk.VERTICAL, command=self.tabla_tokens.yview)
         self.tabla_tokens.configure(yscroll=scrollbar_tokens.set)
         
@@ -92,14 +123,19 @@ class InterfazLexer:
         
         # Mostrar tokens en la tabla
         for token in tokens:
-            # Limpiar la categoría para mejor visualización
-            categoria_simple = token.categoria.split('.')[-1] if '.' in token.categoria else token.categoria
+            categoria_completa = token.categoria # Guardamos la original por si acaso
+            categoria_simple = categoria_completa.split('.')[-1] if '.' in categoria_completa else categoria_completa
+            
+            # Determinar el tag para el color
+            # El tag debe ser el nombre simple de la categoría que usamos al configurar
+            tag_aplicar = categoria_simple 
+            
             self.tabla_tokens.insert("", "end", values=(
                 token.lexema, 
                 categoria_simple,
                 token.fila, 
                 token.columna
-            ))
+            ), tags=(tag_aplicar,))
         
         # Mostrar errores en el panel de errores
         self.texto_errores.config(state=tk.NORMAL)
