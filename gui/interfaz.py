@@ -39,6 +39,9 @@ class InterfazLexer:
             Categoria.CORCHETE_APERTURA: "dark slate gray",
             Categoria.CORCHETE_CIERRE: "dark slate gray",
             Categoria.DOS_PUNTOS: "firebrick",
+            Categoria.SIGNO_INTERROGACION: "purple4",
+            Categoria.OPERADOR_OPTIONAL_CHAINING: "orchid",
+            Categoria.OPERADOR_NULISH_COALESCING: "orchid",
             Categoria.TERMINAL: "magenta",
             Categoria.SEPARADOR: "magenta",
             # Categoria.ERROR se maneja en el panel de errores, no necesita color aquí

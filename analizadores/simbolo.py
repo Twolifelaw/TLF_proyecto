@@ -50,11 +50,16 @@ class SimboloAFD:
             # Terminal y separador
             ';': 'TERMINAL',
             ',': 'SEPARADOR',
-            '.': 'OPERADOR_ACCESO'
+            '.': 'OPERADOR_ACCESO',
+
+            # Operadores con '?'
+            '?': 'SIGNO_INTERROGACION',
+            '?.': 'OPERADOR_OPTIONAL_CHAINING',
+            '??': 'OPERADOR_NULISH_COALESCING'
         }
         
         # Símbolos que podrían ser parte de símbolos más largos
-        self.simbolos_compuestos = ['=', '!', '>', '<', '+', '-', '*', '/', '%', '&', '|']
+        self.simbolos_compuestos = ['=', '!', '>', '<', '+', '-', '*', '/', '%', '&', '|', '?']
         
     def analizar(self, texto, pos_inicial):
         """
