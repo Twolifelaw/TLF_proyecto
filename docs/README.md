@@ -17,7 +17,7 @@ python3 main.py
 
 Y capture la ventana que aparece. La interfaz del analizador léxico se ve así:
 
-![Interfaz del Analizador Léxico de JavaScript](imagenes/interfaz.png)
+![Interfaz del Analizador Léxico de JavaScript](automatas/image.png)
 
 ## Guía de uso
 
