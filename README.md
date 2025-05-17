@@ -44,9 +44,19 @@ TLF_proyecto/
 │   ├── test_comentario_bloque.py
 │   ├── test_simbolo.py
 │   └── test_lexer.py           # Pruebas de integración para AnalizadorLexico
+├── docs/                       # Documentación formal de los autómatas
+│   └── automatas/              # Documentación de cada autómata con su expresión regular y diagrama
 ├── README.md                   # Este archivo
 └── requirements.txt            # (Opcional, si se añaden dependencias externas)
 ```
+
+## Documentación
+
+Este proyecto incluye documentación detallada:
+
+- [Documentación General](docs/README.md): Guía de uso, screenshots y descripción funcional
+- [Documentación de Autómatas](docs/automatas/README.md): Expresiones regulares y diagramas de estados
+- [Requisitos Cumplidos](docs/requisitos_cumplidos.md): Detalle de cómo se cumple cada requisito
 
 ## Requisitos
 
@@ -65,7 +75,7 @@ sudo apt-get install python3-tk
 Para ejecutar la aplicación y abrir la interfaz gráfica:
 
 ```bash
-python main.py
+python3 main.py
 ```
 O si estás en la raíz del proyecto y `main.py` es ejecutable:
 ```bash
