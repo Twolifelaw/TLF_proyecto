@@ -2,6 +2,8 @@
 
 Este directorio contiene la documentación formal de cada uno de los autómatas finitos deterministas implementados para el analizador léxico de JavaScript.
 
+![Imagen representativa de los autómatas](image.png)
+
 ## Índice de Autómatas
 
 1. [Identificadores](identificador.md) - Reconoce nombres de variables, funciones, clases (limitados a 10 caracteres)

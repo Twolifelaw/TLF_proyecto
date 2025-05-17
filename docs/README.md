@@ -17,10 +17,7 @@ python3 main.py
 
 Y capture la ventana que aparece. Debería mostrar una interfaz similar a esta:
 
-```
-image.png
-
-```
+![Imagen representativa de la interfaz](image.png)
 
 ## Guía de uso
 
