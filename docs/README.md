@@ -15,9 +15,9 @@ Para obtener capturas de pantalla de la interfaz gráfica, ejecute la aplicació
 python3 main.py
 ```
 
-Y capture la ventana que aparece. Debería mostrar una interfaz similar a esta:
+Y capture la ventana que aparece. La interfaz del analizador léxico se ve así:
 
-![Imagen representativa de la interfaz](image.png)
+![Interfaz del Analizador Léxico de JavaScript](imagenes/interfaz.png)
 
 ## Guía de uso
 
