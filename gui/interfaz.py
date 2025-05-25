@@ -13,7 +13,7 @@ from tokens import Categoria
 class InterfazLexer:
     def __init__(self, root):
         self.root = root
-        self.root.title("Analizador Léxico - JavaScript")
+        self.root.title("Analizador Léxico - TypeScript")
         self.root.geometry("900x700")  # Ajustar tamaño para más espacio
         
         # Definir colores para categorías de tokens
@@ -44,6 +44,12 @@ class InterfazLexer:
             Categoria.OPERADOR_NULISH_COALESCING: "orchid",
             Categoria.TERMINAL: "magenta",
             Categoria.SEPARADOR: "magenta",
+            Categoria.TIPO: "magenta",
+            Categoria.DECORADOR: "magenta",
+            Categoria.GENERICO: "magenta",
+            Categoria.MODIFICADOR_ACCESO: "magenta",
+            Categoria.ANGULAR_APERTURA: "dark cyan",
+            Categoria.ANGULAR_CIERRE: "dark cyan",
             # Categoria.ERROR se maneja en el panel de errores, no necesita color aquí
         }
         
@@ -59,7 +65,7 @@ class InterfazLexer:
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
         # Panel izquierdo para el editor
-        left_frame = ttk.LabelFrame(main_frame, text="Código JavaScript")
+        left_frame = ttk.LabelFrame(main_frame, text="Código TypeScript")
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
         
         self.editor = scrolledtext.ScrolledText(left_frame, wrap=tk.WORD, width=50, height=30)

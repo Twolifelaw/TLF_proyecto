@@ -1,6 +1,45 @@
-# Documentación del Analizador Léxico de JavaScript
+# Documentación del Analizador Léxico para TypeScript
 
-Este directorio contiene la documentación completa del proyecto de analizador léxico para JavaScript.
+## Descripción General
+Este proyecto implementa un analizador léxico para TypeScript utilizando Autómatas Finitos Deterministas (AFD) y una interfaz gráfica desarrollada con Tkinter para facilitar la interacción.
+
+## Guía de Uso
+1. **Ejecución**: 
+   ```bash
+   python3 main.py
+   ```
+   Esto abrirá la interfaz gráfica.
+
+2. **Carga de Archivos**: 
+   - Utiliza el botón "Cargar Archivo" para seleccionar un archivo TypeScript.
+   - El código se mostrará en el editor de texto.
+
+3. **Análisis Léxico**: 
+   - Haz clic en "Analizar" para procesar el código.
+   - Los tokens identificados se mostrarán en la tabla, con colores según su categoría.
+   - Los errores léxicos (si los hay) se mostrarán en el panel de errores.
+
+4. **Exportación**: 
+   - Utiliza el botón "Exportar" para guardar los resultados del análisis.
+
+## Screenshots
+[Incluir capturas de pantalla de la interfaz gráfica aquí]
+
+## Descripción Funcional
+- **Análisis Léxico**: Identifica y clasifica tokens como palabras reservadas, identificadores, números, cadenas, comentarios, operadores y símbolos.
+- **Interfaz Gráfica**: Proporciona una interfaz intuitiva para cargar archivos, visualizar tokens y errores, y exportar resultados.
+- **Manejo de Errores**: Reporta caracteres no reconocidos indicando su posición.
+
+## Requisitos
+- Python 3.6 o superior
+- Tkinter (generalmente incluido en las instalaciones estándar de Python)
+
+## Autores
+- [Tu Nombre]
+- [Otro Autor]
+
+## Fecha
+[Fecha de Entrega]
 
 ## Contenido
 
@@ -18,13 +57,6 @@ python3 main.py
 Y capture la ventana que aparece. La interfaz del analizador léxico se ve así:
 
 ![Interfaz del Analizador Léxico de JavaScript](automatas/image.png)
-
-## Guía de uso
-
-1. Escriba código JavaScript en el editor de la izquierda
-2. Haga clic en el botón "Analizar Código"
-3. Revise los tokens identificados en la tabla superior derecha
-4. Si hay errores léxicos, aparecerán en el panel inferior derecho
 
 ## Tokens reconocidos
 
