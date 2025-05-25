@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Test exhaustivo del analizador léxico con código TypeScript avanzado.
+Test exhaustivo del analizador léxico para TypeScript.
 """
 
 import sys
@@ -13,90 +13,96 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from lexer import AnalizadorLexico
 from tokens import Categoria
 
-def test_analizador_typescript_completo():
-    codigo_prueba = """
-// Decorador de log
-function Log(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
-    descriptor.value = function (...args: any[]) {
-        console.log(`Llamando a ${propertyKey} con`, args);
-        return originalMethod.apply(this, args);
-    };
-    return descriptor;
-}
-
-type Estado = "activo" | "inactivo" | "pendiente";
-
-interface Usuario {
-    id: number;
-    nombre: string;
-    email?: string;
-    estado: Estado;
-}
-
-class Servicio<T extends Usuario> {
-    private usuarios: T[] = [];
-
-    @Log
-    async agregarUsuario(usuario: T): Promise<boolean> {
-        if (this.usuarios.find(u => u.id === usuario.id)) {
-            throw new Error("Usuario ya existe");
+def test_analizador_typescript_exhaustivo():
+    # Casos de prueba
+    casos_prueba = [
+        # Caso 1: Código TypeScript básico
+        """
+        interface Usuario {
+            id: number;
+            nombre: string;
+            email?: string;
+            estado: "activo" | "inactivo";
         }
-        this.usuarios.push(usuario);
-        return true;
-    }
-
-    @Log
-    async buscarUsuarios(filtro: Partial<T> & { estado?: Estado } = {}): Promise<T[]> {
-        return this.usuarios.filter(u => {
-            for (const key in filtro) {
-                if (filtro[key as keyof T] !== undefined && u[key as keyof T] !== filtro[key as keyof T]) {
-                    return false;
-                }
+        """,
+        # Caso 2: Código TypeScript con errores léxicos
+        """
+        interface Usuario {
+            id: number;
+            nombre: string;
+            email?: string;
+            estado: "activo" | "inactivo";
+            error: @; // Error: carácter no reconocido
+        }
+        """,
+        # Caso 3: Código TypeScript con genéricos y decoradores
+        """
+        @Injectable()
+        class Servicio<T extends Usuario> {
+            private usuarios: T[] = [];
+            async getUsuario(id: number): Promise<T> {
+                return this.usuarios.find(u => u.id === id)!;
             }
-            return true;
-        });
-    }
-}
-
-// Uso de la clase
-const servicio = new Servicio<Usuario>();
-servicio.agregarUsuario({ id: 1, nombre: "Ana", estado: "activo" });
-servicio.buscarUsuarios({ estado: "activo" }).then(console.log);
-"""
+        }
+        """,
+        # Caso 4: Código TypeScript con tipos unión e intersección
+        """
+        type UsuarioAdmin = Usuario & {
+            permisos: string[];
+        };
+        function procesarDato(dato: string | number): void {
+            if (typeof dato === 'string') {
+                console.log(dato.toUpperCase());
+            } else {
+                console.log(dato.toFixed(2));
+            }
+        }
+        """,
+        # Caso 5: Código TypeScript con comentarios y cadenas
+        """
+        // Comentario de línea
+        /* Comentario de bloque */
+        const mensaje = "Hola, mundo!";
+        const otroMensaje = 'Hola, TypeScript!';
+        const template = `Hola, ${mensaje}!`;
+        """
+    ]
 
     analizador = AnalizadorLexico()
-    tokens, errores = analizador.analizar(codigo_prueba)
 
-    print("\n=== TOKENS ENCONTRADOS ===")
-    for token in tokens:
-        print(f"Token: {token.lexema:<20} Categoría: {token.categoria}")
+    for i, codigo in enumerate(casos_prueba, 1):
+        print(f"\n=== CASO DE PRUEBA {i} ===")
+        tokens, errores = analizador.analizar(codigo)
 
-    print("\n=== ERRORES ENCONTRADOS ===")
-    for error in errores:
-        print(f"Error: {error.lexema} en línea {error.fila}, columna {error.columna}")
+        print("\n=== TOKENS ENCONTRADOS ===")
+        for token in tokens:
+            print(f"Token: {token.lexema:<20} Categoría: {token.categoria}")
 
-    # Resumen de categorías relevantes
-    tipos = [t for t in tokens if t.categoria == Categoria.TIPO]
-    genericos = [t for t in tokens if t.categoria == Categoria.GENERICO]
-    decoradores = [t for t in tokens if t.categoria == Categoria.DECORADOR]
-    cadenas = [t for t in tokens if t.categoria == Categoria.CADENA]
-    operadores_union = [t for t in tokens if t.lexema == '|']
-    operadores_interseccion = [t for t in tokens if t.lexema == '&']
-    asyncs = [t for t in tokens if t.lexema == 'async']
-    privates = [t for t in tokens if t.lexema == 'private']
-    arrobas = [t for t in tokens if t.lexema == '@']
+        print("\n=== ERRORES ENCONTRADOS ===")
+        for error in errores:
+            print(f"Error: {error.lexema} en línea {error.fila}, columna {error.columna}")
 
-    print("\n=== RESUMEN ===")
-    print(f"Tipos encontrados: {len(tipos)}")
-    print(f"Genéricos encontrados: {len(genericos)}")
-    print(f"Decoradores encontrados: {len(decoradores)}")
-    print(f"Cadenas encontradas: {len(cadenas)}")
-    print(f"Operadores unión (|): {len(operadores_union)}")
-    print(f"Operadores intersección (&): {len(operadores_interseccion)}")
-    print(f"Palabras 'async': {len(asyncs)}")
-    print(f"Palabras 'private': {len(privates)}")
-    print(f"Símbolos '@': {len(arrobas)}")
+        # Resumen de categorías relevantes
+        tipos = [t for t in tokens if t.categoria == Categoria.TIPO]
+        genericos = [t for t in tokens if t.categoria == Categoria.GENERICO]
+        decoradores = [t for t in tokens if t.categoria == Categoria.DECORADOR]
+        cadenas = [t for t in tokens if t.categoria == Categoria.CADENA]
+        operadores_union = [t for t in tokens if t.lexema == '|']
+        operadores_interseccion = [t for t in tokens if t.lexema == '&']
+        asyncs = [t for t in tokens if t.lexema == 'async']
+        privates = [t for t in tokens if t.lexema == 'private']
+        arrobas = [t for t in tokens if t.lexema == '@']
+
+        print("\n=== RESUMEN ===")
+        print(f"Tipos encontrados: {len(tipos)}")
+        print(f"Genéricos encontrados: {len(genericos)}")
+        print(f"Decoradores encontrados: {len(decoradores)}")
+        print(f"Cadenas encontradas: {len(cadenas)}")
+        print(f"Operadores unión (|): {len(operadores_union)}")
+        print(f"Operadores intersección (&): {len(operadores_interseccion)}")
+        print(f"Palabras 'async': {len(asyncs)}")
+        print(f"Palabras 'private': {len(privates)}")
+        print(f"Símbolos '@': {len(arrobas)}")
 
 if __name__ == "__main__":
-    test_analizador_typescript_completo() 
+    test_analizador_typescript_exhaustivo() 
