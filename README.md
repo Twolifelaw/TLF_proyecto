@@ -1,6 +1,54 @@
-# Analizador Léxico para JavaScript con Interfaz Gráfica Tkinter
+# Analizador Léxico para TypeScript
 
-Este proyecto implementa un analizador léxico para un subconjunto de JavaScript utilizando Autómatas Finitos Deterministas (AFD) y una interfaz gráfica desarrollada con Tkinter para facilitar la interacción.
+## Objetivo
+Desarrollar un analizador léxico para TypeScript que reconozca y clasifique los tokens del lenguaje, siguiendo las especificaciones de la práctica.
+
+## Tokens a Reconocer
+- **Identificadores**: Nombres de variables, funciones, clases, interfaces, etc.
+- **Números**: Naturales y reales.
+- **Cadenas**: Texto entre comillas dobles o simples.
+- **Palabras Reservadas**: `interface`, `type`, `enum`, `namespace`, `extends`, `implements`, `public`, `private`, `protected`, `async`, `await`, `Promise`, etc.
+- **Operadores**: Aritméticos, comparación, lógicos, asignación, etc.
+- **Delimitadores**: Paréntesis, llaves, corchetes, punto y coma, etc.
+- **Comentarios**: De línea (`//`) y de bloque (`/* */`).
+- **Tipos**: Predefinidos (`number`, `string`, `boolean`, etc.) y genéricos (`<T>`).
+- **Decoradores**: Símbolo `@` seguido de un identificador.
+- **Modificadores de Acceso**: `public`, `private`, `protected`.
+- **Operadores de Tipo**: Unión (`|`), intersección (`&`), opcional (`?`), non-null (`!`).
+
+## Autómatas Finitos Deterministas (AFD)
+Se implementarán autómatas para cada categoría de token, siguiendo las expresiones regulares y diagramas de estado proporcionados en la práctica.
+
+## Implementación
+- **Lenguaje**: Python 3.
+- **Estructura**: Módulos separados para cada autómata, orquestados por un analizador léxico principal.
+- **Entrada**: Código fuente en TypeScript.
+- **Salida**: Lista de tokens clasificados y errores léxicos.
+
+## Interfaz Gráfica (GUI)
+- **Tecnología**: Tkinter.
+- **Funcionalidades**:
+  - Carga de archivos TypeScript.
+  - Visualización de tokens y errores.
+  - Resaltado de sintaxis.
+  - Exportación de resultados.
+
+## Ejecución
+```bash
+python3 lexer.py
+```
+
+## Pruebas
+```bash
+python3 tests/test_typescript.py
+```
+
+## Autores
+- [Tu Nombre]
+- [Otro Autor]
+
+## Fecha
+[Fecha de Entrega]
 
 ## Características Principales
 

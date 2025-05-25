@@ -55,11 +55,21 @@ class SimboloAFD:
             # Operadores con '?'
             '?': 'SIGNO_INTERROGACION',
             '?.': 'OPERADOR_OPTIONAL_CHAINING',
-            '??': 'OPERADOR_NULISH_COALESCING'
+            '??': 'OPERADOR_NULISH_COALESCING',
+
+            # Nuevos símbolos para TypeScript
+            '<': 'ANGULAR_APERTURA',      # Para tipos genéricos
+            '>': 'ANGULAR_CIERRE',        # Para tipos genéricos
+            '@': 'DECORADOR',             # Para decoradores
+            '|': 'OPERADOR_UNION',        # Para tipos unión (string | number)
+            '&': 'OPERADOR_INTERSECCION', # Para tipos intersección
+            '!': 'OPERADOR_NON_NULL',     # Para non-null assertion
+            '?': 'OPERADOR_OPTIONAL',     # Para propiedades opcionales
+            'extends': 'OPERADOR_EXTENDS' # Para extends en tipos genéricos
         }
         
         # Símbolos que podrían ser parte de símbolos más largos
-        self.simbolos_compuestos = ['=', '!', '>', '<', '+', '-', '*', '/', '%', '&', '|', '?']
+        self.simbolos_compuestos = ['=', '!', '>', '<', '+', '-', '*', '/', '%', '&', '|', '?', '@']
         
     def analizar(self, texto, pos_inicial):
         """

@@ -119,7 +119,16 @@ class AnalizadorLexico:
             if valido and consumidos > mejor_consumo:
                 mejor_consumo = consumidos
                 mejor_lexema = lexema
-                mejor_categoria = Categoria.IDENTIFICADOR
+                # Clasificación especial para tipos y genéricos
+                from tokens import TIPOS_PREDEFINIDOS
+                # Verificar si es tipo predefinido
+                if lexema in TIPOS_PREDEFINIDOS:
+                    mejor_categoria = Categoria.TIPO
+                # Verificar si está en contexto de genérico (precedido por '<' y seguido de '>')
+                elif pos > 0 and codigo[pos-1] == '<' and pos+len(lexema) < len(codigo) and codigo[pos+len(lexema)] == '>':
+                    mejor_categoria = Categoria.GENERICO
+                else:
+                    mejor_categoria = Categoria.IDENTIFICADOR
             
             # Si se encontró un token
             if mejor_consumo > 0:

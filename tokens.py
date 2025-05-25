@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Definición de categorías de tokens y clase Token para el análisis léxico.
+Definición de categorías de tokens y clase Token para el análisis léxico de TypeScript.
 """
 
-# Categorías de tokens en JavaScript
+# Categorías de tokens en TypeScript
 class Categoria:
     IDENTIFICADOR = "IDENTIFICADOR"
     NUMERO_NATURAL = "NUMERO_NATURAL"
@@ -14,6 +14,12 @@ class Categoria:
     COMENTARIO_LINEA = "COMENTARIO_LINEA"
     COMENTARIO_BLOQUE = "COMENTARIO_BLOQUE"
     
+    # Nuevas categorías para TypeScript
+    TIPO = "TIPO"  # Para tipos como number, string, boolean, etc.
+    DECORADOR = "DECORADOR"  # Para @decorators
+    GENERICO = "GENERICO"  # Para <T>, <K,V>, etc.
+    MODIFICADOR_ACCESO = "MODIFICADOR_ACCESO"  # Para public, private, protected
+    
     # Operadores
     OPERADOR_ARITMETICO = "OPERADOR_ARITMETICO"
     OPERADOR_COMPARACION = "OPERADOR_COMPARACION"
@@ -21,7 +27,7 @@ class Categoria:
     OPERADOR_ASIGNACION = "OPERADOR_ASIGNACION"
     OPERADOR_INCREMENTO = "OPERADOR_INCREMENTO"
     OPERADOR_DECREMENTO = "OPERADOR_DECREMENTO"
-    OPERADOR_ACCESO = "OPERADOR_ACCESO"  # Nueva categoría para el punto (.)
+    OPERADOR_ACCESO = "OPERADOR_ACCESO"  # Para el punto (.)
     SIGNO_INTERROGACION = "SIGNO_INTERROGACION" # Para el ? (operador ternario)
     OPERADOR_OPTIONAL_CHAINING = "OPERADOR_OPTIONAL_CHAINING" # Para ?. 
     OPERADOR_NULISH_COALESCING = "OPERADOR_NULISH_COALESCING" # Para ??
@@ -34,6 +40,8 @@ class Categoria:
     CORCHETE_APERTURA = "CORCHETE_APERTURA"
     CORCHETE_CIERRE = "CORCHETE_CIERRE"
     DOS_PUNTOS = "DOS_PUNTOS"
+    ANGULAR_APERTURA = "ANGULAR_APERTURA"  # Para tipos genéricos <
+    ANGULAR_CIERRE = "ANGULAR_CIERRE"      # Para tipos genéricos >
     
     # Otros
     TERMINAL = "TERMINAL"           # Punto y coma (;)
@@ -66,22 +74,38 @@ class Token:
         """Representación en string del token para depuración."""
         return self.__str__()
 
-# Palabras reservadas de JavaScript para analizador
+# Palabras reservadas de TypeScript
 PALABRAS_RESERVADAS = [
-    # Declaraciones 
+    # Declaraciones básicas (heredadas de JavaScript)
     "var", "let", "const", "function", "class",
     
-    # Control de flujo
+    # Control de flujo (heredadas de JavaScript)
     "if", "else", "switch", "case", "default", "break", 
     "continue", "return", "while", "for", "do",
     
-    # Operadores/Palabras clave
+    # Operadores/Palabras clave (heredadas de JavaScript)
     "new", "this", "super", "delete", "typeof", "instanceof",
     "void", "yield", "await", "in", "of",
     
-    # Valores literales
+    # Valores literales (heredadas de JavaScript)
     "true", "false", "null", "undefined", 
     
-    # Manejo de excepciones
-    "try", "catch", "finally", "throw"
+    # Manejo de excepciones (heredadas de JavaScript)
+    "try", "catch", "finally", "throw",
+    
+    # Nuevas palabras reservadas específicas de TypeScript
+    "interface", "type", "enum", "namespace",
+    "public", "private", "protected", "readonly",
+    "abstract", "implements", "extends",
+    "any", "void", "never", "unknown",
+    "as", "is", "keyof", "typeof",
+    "declare", "module", "export", "import",
+    "readonly", "static", "async", "await"
+]
+
+# Tipos predefinidos de TypeScript
+TIPOS_PREDEFINIDOS = [
+    "number", "string", "boolean", "any", "void",
+    "never", "unknown", "object", "symbol", "bigint",
+    "undefined", "null"
 ] 
